@@ -43,6 +43,14 @@ config EC_LOG_LEVEL
 	help
 	  Set log level for EC FW app modules.
 
+config ESPI_LOG_LEVEL
+	int "Embedded controller application log level"
+	depends on LOG
+	default 4 if EC_DEBUG_LOG
+	default 0
+	help
+	  Set log level for EC FW app modules.
+
 config BOARD_LOG_LEVEL
 	int "Board initialization log level"
 	depends on LOG

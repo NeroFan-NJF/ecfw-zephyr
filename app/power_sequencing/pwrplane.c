@@ -630,6 +630,19 @@ void pwrseq_thread(void *p1, void *p2, void *p3)
 	while (true) {
 		k_msleep(period);
 
+		extern uint8_t start_flash;
+
+		if (start_flash) {
+			start_flash = 0;
+			struct espi_flash_packet pckt = {
+				.buf = NULL,
+				.flash_addr = 0x1000,
+				.len = 0,
+			};
+
+			printk("ESPIHUB_ERASE_FLASH start");
+			espihub_erase_flash(&pckt);
+		}
 		rsmrst_level = gpio_read_pin(RSMRST_PWRGD);
 
 		if (rsmrst_level < 0) {

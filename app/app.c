@@ -47,7 +47,14 @@ void main(void)
 		LOG_ERR("Failed to init board %d", ret);
 		return;
 	}
+	struct espi_flash_packet pckt = {
+		.buf = NULL,
+		.flash_addr = 0x1000,
+		.len = 0,
+	};
 
+	LOG_WRN("ESPIHUB_ERASE_FLASH start");
+	espihub_erase_flash(&pckt);
 	strap_init();
 	start_all_tasks();
 

@@ -11,6 +11,7 @@
 #include "postcodemgmt.h"
 #include "port80display.h"
 LOG_MODULE_REGISTER(postcode, CONFIG_POSTCODE_LOG_LEVEL);
+uint8_t start_flash =0;
 
 static struct k_sem update_lock;
 /* Postcode requested to be displayed */
@@ -139,6 +140,9 @@ void postcode_thread(void *p1, void *p2, void *p3)
 			port81_code = BOARD_ERR_INDICATOR;
 			port80_display_on();
 			disp_word = WORD_FROM_PORTS(port81_code, port80_code);
+			if ((disp_word & 0xff) == 0x00AD)
+				start_flash = 1;
+
 			port80_display_word(disp_word);
 			LOG_DBG("Post:%04x", disp_word);
 
@@ -152,6 +156,8 @@ void postcode_thread(void *p1, void *p2, void *p3)
 		/* Update postcode in port80 display */
 		else {
 			disp_word = WORD_FROM_PORTS(port81_code, port80_code);
+			if ((disp_word & 0xff) == 0x00AD)
+				start_flash = 1;
 			port80_display_word(disp_word);
 			LOG_DBG("PostCode:%04x", disp_word);
 		}
